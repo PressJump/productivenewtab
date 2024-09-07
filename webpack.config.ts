@@ -27,15 +27,12 @@ let generalConfig: any = {
                 use: [
                     {
                         loader: 'ts-loader',
-                        // options: {
-                        //     transpileOnly: true,
-                        // },
                     },
                 ],
                 exclude: /node_modules/,
             },
             {
-                test: /\.scss$/,
+                test: /\.css$/, // Match CSS files
                 use: [
                     {
                         loader: 'style-loader',
@@ -44,7 +41,7 @@ let generalConfig: any = {
                         loader: 'css-loader',
                     },
                     {
-                        loader: 'sass-loader',
+                        loader: 'postcss-loader', // PostCSS loader with Tailwind CSS
                     },
                 ],
             },
