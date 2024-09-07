@@ -78,104 +78,117 @@ const CalendarEvents = () => {
 
     return (
         <div className="p-4 w-full h-screen justify-center items-center flex flex-col">
-            <div>
+            <div className="">
                 {groupedEvents.length === 0 ? (
                     <p>No events found.</p>
                 ) : (
-                    <div className="flex flex-col bg-gray-50 p-2 rounded-md">
-                        <div className="-m-1.5 overflow-x-auto">
-                            <div className="p-1.5 inline-block align-middle">
-                                <div className="overflow-hidden"></div>
-                                <table className=" divide-y divide-gray-200 dark:divide-neutral-700">
-                                    <thead>
-                                        <tr>
-                                            {groupedEvents.map((day, index) => (
-                                                <th
-                                                    key={index}
-                                                    className="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                                                >
-                                                    {new Date(
-                                                        day.date
-                                                    ).toLocaleDateString(
-                                                        undefined,
-                                                        {
-                                                            weekday: 'long',
-                                                            day: 'numeric',
-                                                            month: 'long',
-                                                        }
-                                                    )}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                                        <tr>
-                                            {groupedEvents.map((day, index) => (
-                                                <td
-                                                    key={index}
-                                                    className="px-2 py-4 whitespace-nowrap text-xs font-medium"
-                                                >
-                                                    {day.events.length === 0 ? (
-                                                        <p>No events</p>
-                                                    ) : (
-                                                        <ul>
-                                                            {day.events.map(
-                                                                (
-                                                                    event,
-                                                                    idx
-                                                                ) => (
-                                                                    <li
-                                                                        key={
-                                                                            idx
-                                                                        }
-                                                                        className="bg-gray-100 p-2 rounded-md my-2 max-w-40 text-wrap"
-                                                                    >
-                                                                        <strong>
-                                                                            {event.summary ||
-                                                                                'No Title'}
-                                                                        </strong>
-                                                                        <br />
-                                                                        {event.startDate.toLocaleTimeString()}{' '}
-                                                                        -{' '}
-                                                                        {event.endDate.toLocaleTimeString()}
-                                                                    </li>
-                                                                )
+                    <div className="p-2">
+                        <div className="flex flex-col bg-gray-50 p-2 rounded-md">
+                            <div className="-m-1.5 overflow-x-auto">
+                                <div className="p-1.5 inline-block align-middle">
+                                    <div className="overflow-hidden"></div>
+                                    <table className=" divide-y divide-gray-200 dark:divide-neutral-700">
+                                        <thead>
+                                            <tr>
+                                                {groupedEvents.map(
+                                                    (day, index) => (
+                                                        <th
+                                                            key={index}
+                                                            className="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                                                        >
+                                                            {new Date(
+                                                                day.date
+                                                            ).toLocaleDateString(
+                                                                undefined,
+                                                                {
+                                                                    weekday:
+                                                                        'long',
+                                                                    day: 'numeric',
+                                                                    month: 'long',
+                                                                }
                                                             )}
-                                                        </ul>
-                                                    )}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                        </th>
+                                                    )
+                                                )}
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                                            <tr>
+                                                {groupedEvents.map(
+                                                    (day, index) => (
+                                                        <td
+                                                            key={index}
+                                                            className="px-2 py-4 whitespace-nowrap text-xs font-medium"
+                                                        >
+                                                            {day.events
+                                                                .length ===
+                                                            0 ? (
+                                                                <p>No events</p>
+                                                            ) : (
+                                                                <ul>
+                                                                    {day.events.map(
+                                                                        (
+                                                                            event,
+                                                                            idx
+                                                                        ) => (
+                                                                            <li
+                                                                                key={
+                                                                                    idx
+                                                                                }
+                                                                                className="bg-gray-100 p-2 rounded-md my-2 max-w-40 text-wrap"
+                                                                            >
+                                                                                <strong>
+                                                                                    {event.summary ||
+                                                                                        'No Title'}
+                                                                                </strong>
+                                                                                <br />
+                                                                                {event.startDate.toLocaleTimeString()}{' '}
+                                                                                -{' '}
+                                                                                {event.endDate.toLocaleTimeString()}
+                                                                            </li>
+                                                                        )
+                                                                    )}
+                                                                </ul>
+                                                            )}
+                                                        </td>
+                                                    )
+                                                )}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
-                <div className="relative overflow-hidden w-full">
-                    <div className="w-full mx-auto ">
-                        <div className="text-center">
-                            <div className="sm:mt-12 mx-autorelative">
-                                <form>
-                                    <div className="w-full bg-white border rounded-lg shadow-lg shadow-gray-100">
-                                        <label
-                                            htmlFor="hs-search-article-1"
-                                            className="block text-sm text-gray-700 font-medium"
-                                        >
-                                            <span className="sr-only">
-                                                Search online{' '}
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="hs-search-article-1"
-                                            id="hs-search-article-1"
-                                            className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                                            placeholder="Search article"
-                                        />
-                                    </div>
-                                </form>
+                <div className="w-full p-2">
+                    <div className="relative">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
+                                <svg
+                                    className="shrink-0 size-4 text-gray-400"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.3-4.3"></path>
+                                </svg>
                             </div>
+                            <input
+                                className="py-3 ps-10 pe-4 block w-full border-gray-200 rounded-lg border text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                type="text"
+                                role="combobox"
+                                aria-expanded="false"
+                                placeholder="Search on Google or type a URL"
+                                value=""
+                            />
                         </div>
                     </div>
                 </div>
