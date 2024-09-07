@@ -15,7 +15,7 @@
         "scripts": ["background/background.js"],
         "type": "module"
     },
-    "permissions": ["tabs", "storage"],
+    "permissions": ["tabs", "storage", "<all_urls>"],
     "host_permissions": ["http://*/*", "https://*/*"],
     "options_ui": {
         "page": "options/index.html",

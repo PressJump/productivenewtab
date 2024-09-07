@@ -18,16 +18,16 @@ class Background {
     init = () => {
         console.log('[===== Loaded Background Scripts =====]');
 
-        //When extension installed
+        // When extension installed
         runtime.onInstalled.addListener(this.onInstalled);
 
-        //Add message listener in Browser.
+        // Add message listener in Browser.
         runtime.onMessage.addListener(this.onMessage);
 
-        //Add Update listener for tab
+        // Add Update listener for tab
         tabs.onUpdated.addListener(this.onUpdatedTab);
 
-        //Add New tab create listener
+        // Add New tab create listener
         tabs.onCreated.addListener(this.onCreatedTab);
     };
 
@@ -45,14 +45,25 @@ class Background {
      *
      * @param message
      * @param sender
+     * @param sendResponse
      * @returns
      */
-    onMessage = async (message: EXTMessage, sender: Runtime.MessageSender) => {
+    onMessage = async (message: any, sender: Runtime.MessageSender, sendResponse: (response?: any) => void) => {
         try {
             console.log('[===== Received message =====]', message, sender);
-            switch (message.type) {
+
+            if (message.action === 'fetchCalendar') {
+                fetch(message.url)
+                    .then((response) => response.text())
+                    .then((icsData) => {
+                        sendResponse({ success: true, data: icsData });
+                    })
+                    .catch((error) => sendResponse({ success: false, error: error.message }));
+
+                return true;
             }
-            return true; // result to reply
+
+            return true;
         } catch (error) {
             console.log('[===== Error in MessageListener =====]', error);
             return error;
@@ -84,7 +95,7 @@ class Background {
      * @param {*} tab
      */
     onUpdatedTab = (tabId: number, changeInfo: Tabs.OnUpdatedChangeInfoType, tab: Tabs.Tab) => {
-        console.log('[===== Tab Created =====]', tabId, changeInfo, tab);
+        console.log('[===== Tab Updated =====]', tabId, changeInfo, tab);
     };
 
     /**
@@ -129,7 +140,7 @@ class Background {
     };
 
     /**
-     * send message
+     * Send message
      */
     sendMessage = async (tab: Tabs.Tab, msg: EXTMessage) => {
         try {
