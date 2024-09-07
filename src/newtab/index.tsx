@@ -6,6 +6,7 @@ import '../assets/styles.css'
 const CalendarEvents = () => {
     const [events, setEvents] = useState<any[]>([])
     const [groupedEvents, setGroupedEvents] = useState<any[]>([])
+    const [searchQuery, setSearchQuery] = useState('')
 
     useEffect(() => {
         const fetchCalendarEvents = async () => {
@@ -75,6 +76,14 @@ const CalendarEvents = () => {
 
         setGroupedEvents(groupByDay(events))
     }, [events])
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            const query = encodeURIComponent(searchQuery)
+            window.location.href = `https://www.google.com/search?q=${query}`
+        }
+    }
 
     return (
         <div className="p-4 w-full h-screen justify-center items-center flex flex-col">
@@ -187,7 +196,9 @@ const CalendarEvents = () => {
                                 role="combobox"
                                 aria-expanded="false"
                                 placeholder="Search on Google or type a URL"
-                                value=""
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
                     </div>
