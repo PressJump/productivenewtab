@@ -78,6 +78,23 @@ const CalendarEvents = () => {
         setGroupedEvents(groupByDay(events))
     }, [events])
 
+    useEffect(() => {
+        // Load the saved search engine from localStorage on component mount
+        const savedSearchEngine = localStorage.getItem('searchEngine')
+        if (savedSearchEngine) {
+            setSearchEngine(savedSearchEngine)
+        }
+    }, [])
+
+    const handleSearchEngineChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const newSearchEngine = e.target.value
+        setSearchEngine(newSearchEngine)
+        // Save the selected search engine to localStorage
+        localStorage.setItem('searchEngine', newSearchEngine)
+    }
+
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault()
@@ -179,7 +196,7 @@ const CalendarEvents = () => {
                     <select
                         className="py-3 z-30 ps-2 pe-4 block w-28 border-gray-200 bg-gray-50 rounded-lg border text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                         value={searchEngine}
-                        onChange={(e) => setSearchEngine(e.target.value)}
+                        onChange={handleSearchEngineChange}
                     >
                         <option value="google">Google</option>
                         <option value="bing">DuckDuckGo</option>
