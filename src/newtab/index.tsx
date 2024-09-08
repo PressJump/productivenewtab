@@ -7,6 +7,7 @@ const CalendarEvents = () => {
     const [events, setEvents] = useState<any[]>([])
     const [groupedEvents, setGroupedEvents] = useState<any[]>([])
     const [searchQuery, setSearchQuery] = useState('')
+    const [searchEngine, setSearchEngine] = useState('google')
 
     useEffect(() => {
         const fetchCalendarEvents = async () => {
@@ -81,7 +82,11 @@ const CalendarEvents = () => {
         if (event.key === 'Enter') {
             event.preventDefault()
             const query = encodeURIComponent(searchQuery)
-            window.location.href = `https://www.google.com/search?q=${query}`
+            if (searchEngine === 'google') {
+                window.location.href = `https://www.google.com/search?q=${query}`
+            } else {
+                window.location.href = `https://duckduckgo.com/?q=${query}`
+            }
         }
     }
 
@@ -170,8 +175,16 @@ const CalendarEvents = () => {
                         </div>
                     </div>
                 )}
-                <div className="w-full p-2">
-                    <div className="relative">
+                <div className="w-full p-2 flex gap-2">
+                    <select
+                        className="py-3 z-30 ps-2 pe-4 block w-28 border-gray-200 bg-gray-50 rounded-lg border text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                        value={searchEngine}
+                        onChange={(e) => setSearchEngine(e.target.value)}
+                    >
+                        <option value="google">Google</option>
+                        <option value="bing">DuckDuckGo</option>
+                    </select>
+                    <div className="relative w-full">
                         <div className="relative">
                             <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
                                 <svg
