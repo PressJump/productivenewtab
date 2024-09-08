@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import ICAL from 'ical-expander'
 import '../assets/styles.css'
+import { SlSettings } from 'react-icons/sl'
 
 const CalendarEvents = () => {
     const [events, setEvents] = useState<any[]>([])
@@ -127,102 +128,101 @@ const CalendarEvents = () => {
     return (
         <div className="p-4 w-full h-screen justify-center items-center flex flex-col">
             <div className="w-1/2">
-                {calendarURL ? (
-                    <div className="">
-                        {groupedEvents.length === 0 ? (
-                            <p>No events found.</p>
-                        ) : (
-                            <div className="p-2">
-                                <div className="flex flex-col bg-gray-50 p-2 rounded-md">
-                                    <div className="-m-1.5 overflow-x-auto">
-                                        <div className="p-1.5 inline-block align-middle">
-                                            <div className="overflow-hidden"></div>
-                                            <table className=" divide-y divide-gray-200 dark:divide-neutral-700">
-                                                <thead>
-                                                    <tr>
-                                                        {groupedEvents.map(
-                                                            (day, index) => (
-                                                                <th
-                                                                    key={index}
-                                                                    className="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                                                                >
-                                                                    {new Date(
-                                                                        day.date
-                                                                    ).toLocaleDateString(
-                                                                        undefined,
-                                                                        {
-                                                                            weekday:
-                                                                                'long',
-                                                                            day: 'numeric',
-                                                                            month: 'long',
-                                                                        }
-                                                                    )}
-                                                                </th>
-                                                            )
-                                                        )}
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                                                    <tr>
-                                                        {groupedEvents.map(
-                                                            (day, index) => (
-                                                                <td
-                                                                    key={index}
-                                                                    className="px-2 py-4 whitespace-nowrap text-xs font-medium"
-                                                                >
-                                                                    {day.events
-                                                                        .length ===
-                                                                    0 ? (
-                                                                        <p>
-                                                                            No
-                                                                            events
-                                                                        </p>
-                                                                    ) : (
-                                                                        <ul>
-                                                                            {day.events.map(
-                                                                                (
-                                                                                    event,
-                                                                                    idx
-                                                                                ) => (
-                                                                                    <li
-                                                                                        key={
-                                                                                            idx
-                                                                                        }
-                                                                                        className="bg-gray-100 p-2 rounded-md my-2 max-w-40 text-wrap"
-                                                                                    >
-                                                                                        <strong>
-                                                                                            {event.summary ||
-                                                                                                'No Title'}
-                                                                                        </strong>
-                                                                                        <br />
-                                                                                        {event.startDate.toLocaleTimeString()}{' '}
-                                                                                        -{' '}
-                                                                                        {event.endDate.toLocaleTimeString()}
-                                                                                    </li>
-                                                                                )
-                                                                            )}
-                                                                        </ul>
-                                                                    )}
-                                                                </td>
-                                                            )
-                                                        )}
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                <div className="">
+                    {groupedEvents.length === 0 ? (
+                        <p>No events found.</p>
+                    ) : (
+                        <div className="p-2">
+                            <div className="flex flex-col bg-gray-50 p-2 rounded-md relative">
+                                <button
+                                    onClick={handleSetCalendarURL}
+                                    className="p-2 rounded-full hover:bg-gray-100 top-2 right-2 absolute"
+                                >
+                                    <SlSettings />
+                                </button>
+
+                                <div className="-m-1.5 overflow-x-auto">
+                                    <div className="p-1.5 inline-block align-middle">
+                                        <div className="overflow-hidden"></div>
+                                        <table className=" divide-y divide-gray-200 dark:divide-neutral-700">
+                                            <thead>
+                                                <tr>
+                                                    {groupedEvents.map(
+                                                        (day, index) => (
+                                                            <th
+                                                                key={index}
+                                                                className="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                                                            >
+                                                                {new Date(
+                                                                    day.date
+                                                                ).toLocaleDateString(
+                                                                    undefined,
+                                                                    {
+                                                                        weekday:
+                                                                            'long',
+                                                                        day: 'numeric',
+                                                                        month: 'long',
+                                                                    }
+                                                                )}
+                                                            </th>
+                                                        )
+                                                    )}
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                                                <tr>
+                                                    {groupedEvents.map(
+                                                        (day, index) => (
+                                                            <td
+                                                                key={index}
+                                                                className="px-2 py-4 whitespace-nowrap text-xs font-medium"
+                                                            >
+                                                                {day.events
+                                                                    .length ===
+                                                                0 ? (
+                                                                    <p>
+                                                                        No
+                                                                        events
+                                                                    </p>
+                                                                ) : (
+                                                                    <ul>
+                                                                        {day.events.map(
+                                                                            (
+                                                                                event,
+                                                                                idx
+                                                                            ) => (
+                                                                                <li
+                                                                                    key={
+                                                                                        idx
+                                                                                    }
+                                                                                    className="bg-gray-100 p-2 rounded-md my-2 max-w-40 text-wrap"
+                                                                                >
+                                                                                    <strong>
+                                                                                        {event.summary ||
+                                                                                            'No Title'}
+                                                                                    </strong>
+                                                                                    <br />
+                                                                                    {event.startDate.toLocaleTimeString()}{' '}
+                                                                                    -{' '}
+                                                                                    {event.endDate.toLocaleTimeString()}
+                                                                                </li>
+                                                                            )
+                                                                        )}
+                                                                    </ul>
+                                                                )}
+                                                            </td>
+                                                        )
+                                                    )}
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                        )}
-                    </div>
-                ) : (
-                    <button
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                        onClick={handleSetCalendarURL}
-                    >
-                        Set Calendar URL
-                    </button>
-                )}
+                        </div>
+                    )}
+                </div>
+
                 <div className="w-full p-2 flex gap-2">
                     <select
                         className="py-3 z-30 ps-2 pe-4 block w-28 border-gray-200 bg-gray-50 rounded-lg border text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
