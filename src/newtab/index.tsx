@@ -139,7 +139,7 @@ const CalendarEvents = () => {
 
                 <div className="w-full p-2 flex gap-2">
                     <select
-                        className="py-3 z-30 ps-2 pe-4 block w-28 border-gray-200 bg-gray-50 rounded-lg border text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                        className="py-3 z-30 ps-2 pe-4 block w-30 border-gray-200 bg-white rounded-lg border text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                         value={searchEngine}
                         onChange={handleSearchEngineChange}
                     >
