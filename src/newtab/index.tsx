@@ -6,52 +6,61 @@ import '../assets/styles.css'
 const CalendarEvents = () => {
     const [events, setEvents] = useState<any[]>([])
     const [groupedEvents, setGroupedEvents] = useState<any[]>([])
+    const [calendarURL, setCalendarURL] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [searchEngine, setSearchEngine] = useState('google')
 
     useEffect(() => {
-        const fetchCalendarEvents = async () => {
-            try {
-                const url = 'URL'
-                const response = await fetch(url)
-                const icsData = await response.text()
-
-                const icalExpander = new ICAL({
-                    ics: icsData,
-                    maxIterations: 1000,
-                })
-                const eventsData = icalExpander.between(
-                    new Date(),
-                    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-                    true
-                )
-
-                const mappedEvents = eventsData.events.map((event) => ({
-                    summary: event.summary,
-                    startDate: event.startDate.toJSDate(),
-                    endDate: event.endDate.toJSDate(),
-                }))
-
-                const mappedOccurrences = eventsData.occurrences.map(
-                    (occurrence) => ({
-                        summary: occurrence.item.summary,
-                        startDate: occurrence.startDate.toJSDate(),
-                        endDate: occurrence.endDate.toJSDate(),
-                    })
-                )
-
-                const parsedEvents = [
-                    ...mappedEvents,
-                    ...mappedOccurrences,
-                ].sort((a, b) => a.startDate - b.startDate)
-                setEvents(parsedEvents)
-            } catch (error) {
-                console.error('Error fetching calendar events:', error)
-            }
+        // Load the calendar URL from localStorage
+        const storedURL = localStorage.getItem('calendarURL')
+        if (storedURL) {
+            setCalendarURL(storedURL)
         }
-
-        fetchCalendarEvents()
     }, [])
+
+    const fetchCalendarEvents = async (url: string) => {
+        try {
+            const response = await fetch(url)
+            const icsData = await response.text()
+
+            const icalExpander = new ICAL({
+                ics: icsData,
+                maxIterations: 1000,
+            })
+            const eventsData = icalExpander.between(
+                new Date(),
+                new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                true
+            )
+
+            const mappedEvents = eventsData.events.map((event) => ({
+                summary: event.summary,
+                startDate: event.startDate.toJSDate(),
+                endDate: event.endDate.toJSDate(),
+            }))
+
+            const mappedOccurrences = eventsData.occurrences.map(
+                (occurrence) => ({
+                    summary: occurrence.item.summary,
+                    startDate: occurrence.startDate.toJSDate(),
+                    endDate: occurrence.endDate.toJSDate(),
+                })
+            )
+
+            const parsedEvents = [...mappedEvents, ...mappedOccurrences].sort(
+                (a, b) => a.startDate - b.startDate
+            )
+            setEvents(parsedEvents)
+        } catch (error) {
+            console.error('Error fetching calendar events:', error)
+        }
+    }
+
+    useEffect(() => {
+        if (calendarURL) {
+            fetchCalendarEvents(calendarURL)
+        }
+    }, [calendarURL])
 
     useEffect(() => {
         const groupByDay = (events: any[]) => {
@@ -107,90 +116,112 @@ const CalendarEvents = () => {
         }
     }
 
+    const handleSetCalendarURL = () => {
+        const newURL = window.prompt('Please enter your calendar URL:')
+        if (newURL) {
+            localStorage.setItem('calendarURL', newURL)
+            setCalendarURL(newURL)
+        }
+    }
+
     return (
         <div className="p-4 w-full h-screen justify-center items-center flex flex-col">
-            <div className="">
-                {groupedEvents.length === 0 ? (
-                    <p>No events found.</p>
-                ) : (
-                    <div className="p-2">
-                        <div className="flex flex-col bg-gray-50 p-2 rounded-md">
-                            <div className="-m-1.5 overflow-x-auto">
-                                <div className="p-1.5 inline-block align-middle">
-                                    <div className="overflow-hidden"></div>
-                                    <table className=" divide-y divide-gray-200 dark:divide-neutral-700">
-                                        <thead>
-                                            <tr>
-                                                {groupedEvents.map(
-                                                    (day, index) => (
-                                                        <th
-                                                            key={index}
-                                                            className="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                                                        >
-                                                            {new Date(
-                                                                day.date
-                                                            ).toLocaleDateString(
-                                                                undefined,
-                                                                {
-                                                                    weekday:
-                                                                        'long',
-                                                                    day: 'numeric',
-                                                                    month: 'long',
-                                                                }
-                                                            )}
-                                                        </th>
-                                                    )
-                                                )}
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                                            <tr>
-                                                {groupedEvents.map(
-                                                    (day, index) => (
-                                                        <td
-                                                            key={index}
-                                                            className="px-2 py-4 whitespace-nowrap text-xs font-medium"
-                                                        >
-                                                            {day.events
-                                                                .length ===
-                                                            0 ? (
-                                                                <p>No events</p>
-                                                            ) : (
-                                                                <ul>
-                                                                    {day.events.map(
-                                                                        (
-                                                                            event,
-                                                                            idx
-                                                                        ) => (
-                                                                            <li
-                                                                                key={
-                                                                                    idx
-                                                                                }
-                                                                                className="bg-gray-100 p-2 rounded-md my-2 max-w-40 text-wrap"
-                                                                            >
-                                                                                <strong>
-                                                                                    {event.summary ||
-                                                                                        'No Title'}
-                                                                                </strong>
-                                                                                <br />
-                                                                                {event.startDate.toLocaleTimeString()}{' '}
-                                                                                -{' '}
-                                                                                {event.endDate.toLocaleTimeString()}
-                                                                            </li>
-                                                                        )
+            <div className="w-1/2">
+                {calendarURL ? (
+                    <div className="">
+                        {groupedEvents.length === 0 ? (
+                            <p>No events found.</p>
+                        ) : (
+                            <div className="p-2">
+                                <div className="flex flex-col bg-gray-50 p-2 rounded-md">
+                                    <div className="-m-1.5 overflow-x-auto">
+                                        <div className="p-1.5 inline-block align-middle">
+                                            <div className="overflow-hidden"></div>
+                                            <table className=" divide-y divide-gray-200 dark:divide-neutral-700">
+                                                <thead>
+                                                    <tr>
+                                                        {groupedEvents.map(
+                                                            (day, index) => (
+                                                                <th
+                                                                    key={index}
+                                                                    className="px-2 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                                                                >
+                                                                    {new Date(
+                                                                        day.date
+                                                                    ).toLocaleDateString(
+                                                                        undefined,
+                                                                        {
+                                                                            weekday:
+                                                                                'long',
+                                                                            day: 'numeric',
+                                                                            month: 'long',
+                                                                        }
                                                                     )}
-                                                                </ul>
-                                                            )}
-                                                        </td>
-                                                    )
-                                                )}
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                                </th>
+                                                            )
+                                                        )}
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                                                    <tr>
+                                                        {groupedEvents.map(
+                                                            (day, index) => (
+                                                                <td
+                                                                    key={index}
+                                                                    className="px-2 py-4 whitespace-nowrap text-xs font-medium"
+                                                                >
+                                                                    {day.events
+                                                                        .length ===
+                                                                    0 ? (
+                                                                        <p>
+                                                                            No
+                                                                            events
+                                                                        </p>
+                                                                    ) : (
+                                                                        <ul>
+                                                                            {day.events.map(
+                                                                                (
+                                                                                    event,
+                                                                                    idx
+                                                                                ) => (
+                                                                                    <li
+                                                                                        key={
+                                                                                            idx
+                                                                                        }
+                                                                                        className="bg-gray-100 p-2 rounded-md my-2 max-w-40 text-wrap"
+                                                                                    >
+                                                                                        <strong>
+                                                                                            {event.summary ||
+                                                                                                'No Title'}
+                                                                                        </strong>
+                                                                                        <br />
+                                                                                        {event.startDate.toLocaleTimeString()}{' '}
+                                                                                        -{' '}
+                                                                                        {event.endDate.toLocaleTimeString()}
+                                                                                    </li>
+                                                                                )
+                                                                            )}
+                                                                        </ul>
+                                                                    )}
+                                                                </td>
+                                                            )
+                                                        )}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
+                ) : (
+                    <button
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                        onClick={handleSetCalendarURL}
+                    >
+                        Set Calendar URL
+                    </button>
                 )}
                 <div className="w-full p-2 flex gap-2">
                     <select
